@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-dark text-white text-center">
+                <h1 class="h4 mb-0">Hemen Kayıt Ol</h1>
+            </div>
+
+            <div class="card-body p-4">
+                <p class="text-muted mb-4">Yeni bir hesap oluşturmak için formu doldurun.</p>
+
+                <form asp-controller="Account" asp-action="Register" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label for="FullName" class="form-label">Ad Soyad</label>
+                            <input type="text" id="FullName" name="FullName" class="form-control" placeholder="Ad Soyad" required />
+                        </div>
+
+                        <div class="col-12">
+                            <label for="Email" class="form-label">E-posta</label>
+                            <input type="email" id="Email" name="Email" class="form-control" placeholder="ornek@mail.com" required />
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="Password" class="form-label">Şifre</label>
+                            <input type="password" id="Password" name="Password" class="form-control" required />
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label for="ConfirmPassword" class="form-label">Şifre Tekrar</label>
+                            <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required />
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-grid d-md-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Kayıt Ol</button>
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg">Zaten hesabın var mı? Giriş Yap</a>
+                    </div>
+
+                    @if (ViewBag.Message != null)
+                    {
+                        <div class="alert alert-info mt-3 text-center">@ViewBag.Message</div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
