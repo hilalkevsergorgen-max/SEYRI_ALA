@@ -1,48 +1,63 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SEYRİ_ALA.Models; // ViewModel'ları kullanmak için bu satır zorunludur!
 
-namespace SEYRİ_ALA.Controllers // Not: Namespace adınız SEYRİ_ALA olmalı
+namespace SEYRİ_ALA.Controllers
 {
     public class AccountController : Controller
     {
-        // GET: /Account/Register (Kayıt formunu gösterir)
+        // GET: /Account/Register (RegisterViewModel'ı View'e boş gönderir)
         [HttpGet]
         public IActionResult Register()
         {
-            ViewData["Title"] = "Kayıt Ol";
-            return View();
+            return View(new RegisterViewModel());
         }
 
-        // POST: /Account/Register (Formdan gelen veriyi yakalar)
+        // POST: /Account/Register (Formdan gelen RegisterViewModel'ı alır)
         [HttpPost]
-        [ValidateAntiForgeryToken] // Güvenlik için zorunludur
-        public IActionResult Register(string FullName, string Email, string Password, string ConfirmPassword)
+        [ValidateAntiForgeryToken] // CSRF koruması
+        public IActionResult Register(RegisterViewModel model)
         {
-            // Şimdilik sadece test için bir mesaj gösteriyoruz.
-            ViewBag.Message = $"✅ Başarılı! FullName: {FullName}, E-posta: {Email}. Form gönderildi (UI testi).";
+            // ModelState.IsValid: ViewModel'daki [Required] vb. kurallarını kontrol eder.
+            if (ModelState.IsValid)
+            {
+                // Kurallar geçildi, başarılı kayıt işlemi burada yapılır (Sonraki Görevler)
+                ViewBag.Message = "✅ Kayıt başarılı! Model geçerli, veri işlenmeye hazır.";
+                // return RedirectToAction("Index", "Home"); 
+            }
+            else
+            {
+                // Kurallar geçilemedi, form hatalarını göstermek için aynı View'a geri dönülür.
+                ViewBag.Message = "❌ HATA! Formda zorunlu alanlar veya format hataları var.";
+            }
 
-            // Veri işlemeye gerek yok, aynı sayfayı geri dönüyoruz.
-            return View();
+            return View(model); // Hata durumunda, kullanıcının girdiği veriyi tekrar gönder
         }
 
-        // GET: /Account/Login (Giriş formunu gösterir)
+        // GET: /Account/Login (LoginViewModel'ı View'e boş gönderir)
         [HttpGet]
         public IActionResult Login()
         {
-            ViewData["Title"] = "Giriş Yap";
-            return View();
+            return View(new LoginViewModel());
         }
 
-        // POST: /Account/Login (Formdan gelen veriyi yakalar)
+        // POST: /Account/Login (Formdan gelen LoginViewModel'ı alır)
         [HttpPost]
-        [ValidateAntiForgeryToken] // Güvenlik için zorunludur
-        public IActionResult Login(string Email, string Password, bool RememberMe)
+        [ValidateAntiForgeryToken] // CSRF koruması
+        public IActionResult Login(LoginViewModel model)
         {
-            // Şimdilik sadece test için bir mesaj gösteriyoruz.
-            string status = RememberMe ? "Hatırla aktif" : "Hatırla pasif";
-            ViewBag.Message = $"✅ Başarılı! E-posta: {Email}, {status}. Giriş denemesi (UI testi).";
+            if (ModelState.IsValid)
+            {
+                // Kurallar geçildi, başarılı giriş işlemi burada yapılır (Sonraki Görevler)
+                ViewBag.Message = $"✅ Giriş başarılı! E-posta: {model.Email}.";
+                // return RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                // Kurallar geçilemedi, form hatalarını göstermek için aynı View'a geri dönülür.
+                ViewBag.Message = "❌ HATA! Giriş bilgileri eksik veya format hatalı.";
+            }
 
-            // Veri işlemeye gerek yok, aynı sayfayı geri dönüyoruz.
-            return View();
+            return View(model);
         }
     }
 }

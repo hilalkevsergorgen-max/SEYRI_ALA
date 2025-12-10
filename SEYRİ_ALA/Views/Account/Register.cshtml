@@ -1,4 +1,5 @@
-﻿@{
+﻿@model SEYRİ_ALA.Models.RegisterViewModel // MODEL TANIMI
+@{
     ViewData["Title"] = "Kayıt Ol";
 }
 
@@ -13,33 +14,38 @@
                 <p class="text-muted mb-4">Yeni bir hesap oluşturmak için formu doldurun.</p>
 
                 <form asp-controller="Account" asp-action="Register" method="post">
-                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
                     <div class="row g-3">
+
                         <div class="col-12">
-                            <label for="FullName" class="form-label">Ad Soyad</label>
-                            <input type="text" id="FullName" name="FullName" class="form-control" placeholder="Ad Soyad" required />
+                            <label asp-for="FullName" class="form-label"></label>
+                            <input asp-for="FullName" class="form-control" placeholder="Ad Soyad" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
                         </div>
 
                         <div class="col-12">
-                            <label for="Email" class="form-label">E-posta</label>
-                            <input type="email" id="Email" name="Email" class="form-control" placeholder="ornek@mail.com" required />
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" placeholder="ornek@mail.com" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
 
                         <div class="col-12 col-md-6">
-                            <label for="Password" class="form-label">Şifre</label>
-                            <input type="password" id="Password" name="Password" class="form-control" required />
+                            <label asp-for="Password" class="form-label"></label>
+                            <input asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
 
                         <div class="col-12 col-md-6">
-                            <label for="ConfirmPassword" class="form-label">Şifre Tekrar</label>
-                            <input type="password" id="ConfirmPassword" name="ConfirmPassword" class="form-control" required />
+                            <label asp-for="ConfirmPassword" class="form-label"></label>
+                            <input asp-for="ConfirmPassword" class="form-control" />
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
                     </div>
 
-                    <div class="mt-4 d-grid d-md-flex gap-2">
+                    <div class="mt-4 d-grid gap-2">
                         <button type="submit" class="btn btn-primary btn-lg">Kayıt Ol</button>
-                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-secondary btn-lg">Zaten hesabın var mı? Giriş Yap</a>
                     </div>
 
                     @if (ViewBag.Message != null)
@@ -51,3 +57,7 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
