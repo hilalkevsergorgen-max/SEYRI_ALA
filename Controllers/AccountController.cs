@@ -1,62 +1,70 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SEYRİ_ALA.Models; // ViewModel'ları kullanmak için bu satır zorunludur!
+using Microsoft.EntityFrameworkCore;
+using SEYRİ_ALA.Data;
+using SEYRİ_ALA.Models;
+using System.Linq;
 
 namespace SEYRİ_ALA.Controllers
 {
     public class AccountController : Controller
     {
-        // GET: /Account/Register (RegisterViewModel'ı View'e boş gönderir)
-        [HttpGet]
-        public IActionResult Register()
+        // K1: Hilal'in tasarımını bozmadan veritabanı bağlantısını ekliyoruz
+        private readonly ApplicationDbContext _context;
+
+        public AccountController(ApplicationDbContext context)
         {
-            return View(new RegisterViewModel());
+            _context = context;
         }
 
-        // POST: /Account/Register (Formdan gelen RegisterViewModel'ı alır)
+        // GET: Hilal'in hazırladığı boş form yapıları (Aynen korundu)
+        [HttpGet]
+        public IActionResult Register() => View(new RegisterViewModel());
+
         [HttpPost]
-        [ValidateAntiForgeryToken] // CSRF koruması
+        [ValidateAntiForgeryToken]
         public IActionResult Register(RegisterViewModel model)
         {
-            // ModelState.IsValid: ViewModel'daki [Required] vb. kurallarını kontrol eder.
-            if (ModelState.IsValid)
+            // Hilal'in validation (doğrulama) yapısını koruyoruz
+            if (!ModelState.IsValid) return View(model);
+
+            // K1: Kayıt Mantığı - Veritabanı kontrolü ve EF Core ile yazma
+            if (_context.Users.Any(u => u.Email == model.Email))
             {
-                // Kurallar geçildi, başarılı kayıt işlemi burada yapılır (Sonraki Görevler)
-                ViewBag.Message = "✅ Kayıt başarılı! Model geçerli, veri işlenmeye hazır.";
-                // return RedirectToAction("Index", "Home"); 
-            }
-            else
-            {
-                // Kurallar geçilemedi, form hatalarını göstermek için aynı View'a geri dönülür.
-                ViewBag.Message = "❌ HATA! Formda zorunlu alanlar veya format hataları var.";
+                ViewBag.Message = "❌ Bu e-posta zaten kayıtlı.";
+                return View(model);
             }
 
-            return View(model); // Hata durumunda, kullanıcının girdiği veriyi tekrar gönder
+            var user = new User
+            {
+                Email = model.Email,
+                PasswordHash = model.Password // Bir sonraki adımda hashing eklenecek
+            };
+
+            _context.Users.Add(user);
+            _context.SaveChanges();
+
+            return RedirectToAction("Login");
         }
 
-        // GET: /Account/Login (LoginViewModel'ı View'e boş gönderir)
         [HttpGet]
-        public IActionResult Login()
-        {
-            return View(new LoginViewModel());
-        }
+        public IActionResult Login() => View(new LoginViewModel());
 
-        // POST: /Account/Login (Formdan gelen LoginViewModel'ı alır)
         [HttpPost]
-        [ValidateAntiForgeryToken] // CSRF koruması
+        [ValidateAntiForgeryToken]
         public IActionResult Login(LoginViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View(model);
+
+            // K1: Giriş Mantığı - Veritabanından kullanıcıyı doğrulama
+            var user = _context.Users.FirstOrDefault(u => u.Email == model.Email && u.PasswordHash == model.Password);
+
+            if (user != null)
             {
-                // Kurallar geçildi, başarılı giriş işlemi burada yapılır (Sonraki Görevler)
-                ViewBag.Message = $"✅ Giriş başarılı! E-posta: {model.Email}.";
-                // return RedirectToAction("Index", "Home");
-            }
-            else
-            {
-                // Kurallar geçilemedi, form hatalarını göstermek için aynı View'a geri dönülür.
-                ViewBag.Message = "❌ HATA! Giriş bilgileri eksik veya format hatalı.";
+                // K1: Oturum yönetimi altyapısı buraya gelecek
+                return RedirectToAction("Index", "Home");
             }
 
+            ViewBag.Message = "❌ Hatalı giriş bilgileri.";
             return View(model);
         }
     }
