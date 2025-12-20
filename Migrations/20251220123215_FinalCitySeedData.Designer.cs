@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SEYRİ_ALA.Data;
 
@@ -11,9 +12,11 @@ using SEYRİ_ALA.Data;
 namespace SEYRİ_ALA.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251220123215_FinalCitySeedData")]
+    partial class FinalCitySeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,21 +33,90 @@ namespace SEYRİ_ALA.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Country")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FoodScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HistoryScore")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("NatureScore")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("Cities");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Türkiye'nin kalbi, Cumhuriyet'in başkenti ve Anıtkabir'in evi.",
+                            FoodScore = 8,
+                            HistoryScore = 10,
+                            Latitude = 39.933399999999999,
+                            Longitude = 32.859699999999997,
+                            Name = "Ankara",
+                            NatureScore = 6
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "İki kıtanın buluştuğu, tarihin kalbi İstanbul.",
+                            FoodScore = 10,
+                            HistoryScore = 10,
+                            Latitude = 41.008200000000002,
+                            Longitude = 28.978400000000001,
+                            Name = "İstanbul",
+                            NatureScore = 5
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Peri bacaları ve sıcak hava balonlarıyla masalsı bir yolculuk.",
+                            FoodScore = 7,
+                            HistoryScore = 9,
+                            Latitude = 38.643099999999997,
+                            Longitude = 34.828899999999997,
+                            Name = "Kapadokya",
+                            NatureScore = 10
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Masmavi deniz ve antik kentlerin buluşma noktası.",
+                            FoodScore = 8,
+                            HistoryScore = 8,
+                            Latitude = 36.884099999999997,
+                            Longitude = 30.7056,
+                            Name = "Antalya",
+                            NatureScore = 9
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Sümela Manastırı ve Uzungöl ile doğanın yeşil tonları.",
+                            FoodScore = 9,
+                            HistoryScore = 8,
+                            Latitude = 41.002699999999997,
+                            Longitude = 39.716799999999999,
+                            Name = "Trabzon",
+                            NatureScore = 10
+                        });
                 });
 
             modelBuilder.Entity("SEYRİ_ALA.Models.Comment", b =>

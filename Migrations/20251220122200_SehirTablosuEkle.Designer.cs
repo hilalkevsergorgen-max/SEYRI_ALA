@@ -12,8 +12,8 @@ using SEYRİ_ALA.Data;
 namespace SEYRİ_ALA.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251210080134_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20251220122200_SehirTablosuEkle")]
+    partial class SehirTablosuEkle
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -33,17 +33,29 @@ namespace SEYRİ_ALA.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Country")
+                    b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FoodScore")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HistoryScore")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Latitude")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Longitude")
+                        .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
-                    b.Property<string>("Slug")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("NatureScore")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
